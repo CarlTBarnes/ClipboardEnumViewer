@@ -105,7 +105,7 @@ Window WINDOW('Clipboard Enum and View'),AT(,,306,265),GRAY,SYSTEM,ICON(ICON:Pas
         BUTTON('&Refresh'),AT(3,97,48,14),USE(?RefreshBtn),TIP('EnumClipboardFormats')
         CHECK('Sample Data'),AT(62,99),USE(ShowSampleData),TIP('Show Sample Data Column. May crash?')
         BUTTON('&Copy List **'),AT(152,97,,14),USE(?CopyListBtn),SKIP,TIP('Copy List of Formats to C' & |
-                'lipboard<13,10><13,10>** FYI You Lose Clipboard')
+                'lipboard tab delimited<13,10><13,10>** FYI -> You Lose Clipboard')
         PROMPT('Open Word or Excel and Copy to the Clipboard to see a lot of formats.'),AT(221,97,82,23), |
                 USE(?FYI),FONT(,9)
         BUTTON('&GetFormat #'),AT(3,120,48),USE(?GetFormatBtn),TIP('Calls Clarion Clipboard( # ) for' & |
@@ -210,7 +210,7 @@ LoadEnumFormatQRtn ROUTINE
 LnClp   LONG
     CODE
     FREE(EnumFormatQ)
-    EnumsAsText = 'Format#<9>Format Name<13,10>'
+    EnumsAsText = '' 
     IF ~OpenClipboard(0{PROP:Handle}) THEN 
        MESSAGE('OpenClipboard() failed||Last Error=' & GetLastError(),'LoadClipRtn ROUTINE')
        DISPLAY
@@ -231,7 +231,6 @@ LnClp   LONG
         END
         EnumQ:Name = CustomName
         ADD(EnumFormatQ,EnumQ:Number) 
-        EnumsAsText = CLIP(EnumsAsText) &  CBFormat &'<9>'&  CLIP(CustomName) & '<13,10>'
     END
 
     IF ~CloseClipboard() THEN                                         !0=failed
@@ -244,6 +243,7 @@ LnClp   LONG
         DO SyncGetCbNumberRtn
     END 
     DISPLAY
+    DO BuildEnumsAsTextForCopyListRtn     
     EXIT
 
 SyncGetCbNumberRtn ROUTINE       
@@ -277,6 +277,16 @@ SaveCbNumber    LONG
        DO GetFormatRtn     
     END 
     EXIT
+
+BuildEnumsAsTextForCopyListRtn ROUTINE
+    DATA
+QX              LONG   
+    CODE
+    EnumsAsText = 'Format#<9>Format Name<13,10>'
+    LOOP QX=1 TO RECORDS(EnumFormatQ)
+        GET(EnumFormatQ,QX)    
+        EnumsAsText = CLIP(EnumsAsText) &  EnumQ:Number &'<9>'&  CLIP(EnumQ:Name) & '<13,10>'
+    END
 
 !================================================================
 GetCBFormatName PROCEDURE(LONG pFormat_CB_No)!,STRING
