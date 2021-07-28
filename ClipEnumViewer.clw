@@ -109,7 +109,7 @@ Window WINDOW('Clipboard Enum and View'),AT(,,306,265),GRAY,SYSTEM,ICON(ICON:Pas
         PROMPT('Open Word or Excel and Copy to the Clipboard to see a lot of formats.'),AT(221,97,82,23), |
                 USE(?FYI),FONT(,9)
         BUTTON('&GetFormat #'),AT(3,120,48),USE(?GetFormatBtn),TIP('Calls Clarion Clipboard( # ) for' & |
-                ' Number entered.<13,10>Or double-click on list of formats.')
+                ' Number entered.<13,10>Or Double Click on list of formats above.')
         ENTRY(@n7),AT(62,122,36),USE(GetCbNumber)
         TEXT,AT(4,139),FULL,USE(ShowCbContent),HVSCROLL
         CHECK('<<&Binary>'),AT(106,125,40),USE(ShowBin),SKIP,TIP('Show 1-31 and 127-255 as <<#>.')
@@ -136,7 +136,7 @@ Window WINDOW('Clipboard Enum and View'),AT(,,306,265),GRAY,SYSTEM,ICON(ICON:Pas
            GET(EnumFormatQ,CHOICE(?List:EnumFormatQ))
            CASE EVENT()
            OF EVENT:AlertKey
-              IF KEYCODE()=MouseLeft2 THEN DELETE(EnumFormatQ).
+              IF KEYCODE()=DeleteKey THEN DELETE(EnumFormatQ).
            OF EVENT:NewSelection 
               IF KEYCODE()=MouseLeft2 THEN
                  GetCbNumber = EnumQ:Number
